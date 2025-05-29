@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:14
+    container_name: practicando 
+    environment:
+      - POSTGRES_DB=practica
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_USER=user
+    ports:
+      - "3456:5432"
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: practicando-pgadmin
+    ports:
+      - "80:80"   # Cambiado a 8080 para evitar conflicto con otros servicios
+    environment:
+      PGADMIN_DEFAULT_EMAIL: roger@xtec.com
+      PGADMIN_DEFAULT_PASSWORD: roger123
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  local_pgdata:
+  pgadmin-data:
