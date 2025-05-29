@@ -34,7 +34,7 @@ async def update_existing_user(user_id: int, user: User):
 @app.delete("/users/{user_id}")
 async def delete_existing_user(user_id: int):
     existing_user = get_user(user_id)
-    if existing_user is None:
+    if existing_user is None:#ss
         raise HTTPException(status_code=404, detail="User not found")
     delete_user(user_id)#ksk
     return {"detail": "User deleted"}
