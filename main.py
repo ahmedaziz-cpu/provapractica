@@ -1,4 +1,6 @@
 from fastapi import FastAPI, HTTPException
+from sqlalchemy.testing.suite.test_reflection import users
+
 from esquemas.user import User
 from servicios.user_service import get_users, get_user, create_user, update_user, delete_user
 from servicios.createtables import create_tables
@@ -11,7 +13,9 @@ def startup_event():
 
 @app.get("/users", response_model=list[User])
 async def read_users():
+    ##result = users.get_users()
     return get_users()
+
 
 @app.get("/users/{user_id}", response_model=User)
 async def read_user(user_id: int):

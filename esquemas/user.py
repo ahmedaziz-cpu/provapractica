@@ -4,3 +4,4 @@ class User(BaseModel):
     id: int | None = None
     name: str
     email: str
+#shsh
