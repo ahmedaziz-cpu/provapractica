@@ -36,5 +36,5 @@ async def delete_existing_user(user_id: int):
     existing_user = get_user(user_id)
     if existing_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    delete_user(user_id)
+    delete_user(user_id)#ksk
     return {"detail": "User deleted"}
