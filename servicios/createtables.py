@@ -1,4 +1,4 @@
-from connexion.db import connection_db
+from conexion.db import connection_db
 
 def create_tables():
     print(" Creando tablas...")

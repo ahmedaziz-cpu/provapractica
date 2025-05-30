@@ -17,7 +17,7 @@ services:
     image: dpage/pgadmin4
     container_name: practicando-pgadmin
     ports:
-      - "80:80"   # Cambiado a 8080 para evitar conflicto con otros servicios
+      - "80:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: roger@xtec.com
       PGADMIN_DEFAULT_PASSWORD: roger123
