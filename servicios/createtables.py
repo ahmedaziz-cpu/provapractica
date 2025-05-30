@@ -1,7 +1,7 @@
 from conexion.db import connection_db
 
 def create_tables():
-    print(" Creando tablas...")
+    print(" Creando taablas...")
     conn = connection_db()
     cur = conn.cursor()
     cur.execute("""
