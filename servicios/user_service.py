@@ -1,44 +1,47 @@
-from connexion.db import connection_db
-from esquemas.user import User
+from conexion.db import connection_db
+from esquemas.user import user_schema, users_schema
 
 def get_users():
     conn = connection_db()
-    cur = conn.cursor()
-    cur.execute("SELECT id, name, email FROM users")
-    rows = cur.fetchall()
+    cursor = conn.cursor()
+    sql_read = "SELECT id, name, email FROM users"
+    cursor.execute(sql_read)
+    result = cursor.fetchall()
     conn.close()
-    return [User(id=row[0], name=row[1], email=row[2]) for row in rows]
+    return users_schema(result)
 
 def get_user(user_id: int):
     conn = connection_db()
-    cur = conn.cursor()
-    cur.execute("SELECT id, name, email FROM users WHERE id = %s", (user_id,))
-    row = cur.fetchone()
+    cursor = conn.cursor()
+    sql_read = "SELECT id, name, email FROM users WHERE id = %s"
+    cursor.execute(sql_read, (user_id,))
+    result = cursor.fetchone()
     conn.close()
-    if row:
-        return User(id=row[0], name=row[1], email=row[2])
-    return None
+    return user_schema(result) if result else None
 
-def create_user(user: User):
+def create_user(data: dict):
     conn = connection_db()
-    cur = conn.cursor()
-    cur.execute("INSERT INTO users (name, email) VALUES (%s, %s) RETURNING id", (user.name, user.email))
-    new_id = cur.fetchone()[0]
+    cursor = conn.cursor()
+    sql_insert = "INSERT INTO users (name, email) VALUES (%s, %s) RETURNING id"
+    cursor.execute(sql_insert, (data["name"], data["email"]))
+    new_id = cursor.fetchone()[0]
     conn.commit()
     conn.close()
-    return User(id=new_id, name=user.name, email=user.email)
+    return {"id": new_id, **data}
 
-def update_user(user_id: int, user: User):
+def update_user(user_id: int, data: dict):
     conn = connection_db()
-    cur = conn.cursor()
-    cur.execute("UPDATE users SET name = %s, email = %s WHERE id = %s", (user.name, user.email, user_id))
+    cursor = conn.cursor()
+    sql_update = "UPDATE users SET name = %s, email = %s WHERE id = %s"
+    cursor.execute(sql_update, (data["name"], data["email"], user_id))
     conn.commit()
     conn.close()
-    return User(id=user_id, name=user.name, email=user.email)
+    return {"id": user_id, **data}
 
 def delete_user(user_id: int):
     conn = connection_db()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM users WHERE id = %s", (user_id,))
+    cursor = conn.cursor()
+    sql_delete = "DELETE FROM users WHERE id = %s"
+    cursor.execute(sql_delete, (user_id,))
     conn.commit()
     conn.close()

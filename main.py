@@ -1,7 +1,8 @@
-from fastapi import FastAPI, HTTPException
-from esquemas.user import User
+from fastapi import FastAPI
+from typing import Dict
 from servicios.user_service import get_users, get_user, create_user, update_user, delete_user
 from servicios.createtables import create_tables
+from esquemas.user import user_schema, users_schema
 
 app = FastAPI()
 
@@ -9,32 +10,33 @@ app = FastAPI()
 def startup_event():
     create_tables()
 
-@app.get("/users", response_model=list[User])
+@app.get("/users")
 async def read_users():
-    return get_users()
+    users = get_users()
+    return users_schema(users)
 
-@app.get("/users/{user_id}", response_model=User)
+@app.get("/users/{user_id}")
 async def read_user(user_id: int):
     user = get_user(user_id)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
+    if not user:
+        return {"error": "User not found"}
+    return user_schema(user)
 
-@app.post("/users", response_model=User)
-async def create_new_user(user: User):
-    return create_user(user)
+@app.post("/users")
+async def create_new_user(data: Dict):
+    return create_user(data)
 
-@app.put("/users/{user_id}", response_model=User)
-async def update_existing_user(user_id: int, user: User):
-    existing_user = get_user(user_id)
-    if existing_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return update_user(user_id, user)
+@app.put("/users/{user_id}")
+async def update_existing_user(user_id: int, data: Dict):
+    existing = get_user(user_id)
+    if not existing:
+        return {"error": "no hay usuario"}
+    return update_user(user_id, data)
 
 @app.delete("/users/{user_id}")
 async def delete_existing_user(user_id: int):
-    existing_user = get_user(user_id)
-    if existing_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+    existing = get_user(user_id)
+    if not existing:
+        return {"error": "no hay usuario"}
     delete_user(user_id)
     return {"detail": "User deleted"}
